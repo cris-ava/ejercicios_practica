@@ -1,0 +1,219 @@
+
+#Ejercico 23
+#Implementar un algoritmo que permita generar un árbol con los datos de la siguiente tabla y
+#    resuelva las siguientes consultas:
+#a. listado inorden de las criaturas y quienes la derrotaron;
+#b. se debe permitir cargar una breve descripción sobre cada criatura;
+#c. mostrar toda la información de la criatura Talos;
+#d. determinar los 3 héroes o dioses que derrotaron mayor cantidad de criaturas;
+#e. listar las criaturas derrotadas por Heracles;
+#f. listar las criaturas que no han sido derrotadas;
+#g. además cada nodo debe tener un campo “capturada” que almacenará el nombre del héroe
+#    o dios que la capturo;
+#h. modifique los nodos de las criaturas Cerbero, Toro de Creta, Cierva Cerinea y Jabalí de
+#    Erimanto indicando que Heracles las atrapó;
+#i. se debe permitir búsquedas por coincidencia;
+#j. eliminar al Basilisco y a las Sirenas;
+#k. modificar el nodo que contiene a las Aves del Estínfalo, agregando que Heracles
+#    derroto a varias;
+#l. modifique el nombre de la criatura Ladón por Dragón Ladón;
+#m. realizar un listado por nivel del árbol;
+#n. muestre las criaturas capturadas por Heracles.
+#
+#-------------------------------------------------------------------------------------
+#Criaturas               Derrotado por           Criaturas               Derrotado por
+#Ceto                    -                       Cerda de Cromión        Teseo
+#Tifón                   Zeus                    Ortro                   Heracles
+#Equidna                 Argos Panoptes          Toro de Creta           Teseo
+#Dino                    -                       Jabalí de Calidón       Atalanta
+#Pefredo                 -                       Carcinos                -
+#Enio                    -                       Gerión                  Heracles
+#Escila                  -                       Cloto                   -
+#Caribdis                -                       Láquesis                -
+#Euríale                 -                       Atropos                 -
+#Esteno                  -                       Minotauro de Creta      Teseo
+#Medusa                  Perseo                  Harpías                 -
+#Ladón                   Heracles                Argos Panoptes          Hermes
+#Aguila del Cáucaso      -                       Aves del Estínfalo      -
+#Quimera                 Belerofonte             Talos                   Medea
+#Hidra de Lerna          Heracles                Sirenas                 -
+#León de Nemea           Heracles                Pitón                   Apolo
+#Esfinge                 Edipo                   Cierva de Cerinea       -
+#Dragón de la Cólquida   -                       Basilisco               -
+#Cerbero                 -                       Jabalí de Erimanto      -
+
+
+
+
+from cola import Cola
+from arbol import (
+    nodoArbol, # Begin
+    insertar_nodo, # Begin L
+    inorden, # A J L
+    descripciones, # B
+    inorden_empieza_con, # B I L
+    busqueda, # B C H K
+    contar_Vencedor, # D
+    inorden_Heracles, # E
+    inorden_No_vencidas, # F
+    capturadas, # G
+    eliminar_nodo, # J L
+    por_nivel, # M   
+    inorden_capturada, # N
+)
+
+arbol = nodoArbol()
+arbol_vencedores=nodoArbol()
+
+lista = [
+    ['Ceto', None],               ['Tifón', 'Zeus'],                ['Equidna', 'Argos Panoptes'],
+    ['Dino', None],               ['Pefredo', None],                ['Enio', None],
+    ['Escila', None],             ['Caribdis', None],               ['Euríale', None],
+    ['Esteno', None],             ['Medusa', 'Perseo'],             ['Ladón', 'Heracles'],
+    ['Aguila del Cáucaso', None], ['Quimera', 'Belerofonte'],       ['Hidra de Lerna', 'Heracles'],
+    ['León de Nemea', 'Heracles'],['Esfinge', 'Edipo'],             ['Dragón de la Cólquida', None],
+    ['Cerbero', None],            ['Cerda de Cromión', 'Teseo'],    ['Ortro', 'Heracles'],
+    ['Toro de Creta', 'Teseo'],   ['Jabalí de Calidón', 'Atalanta'],['Carcinos', None],
+    ['Gerión', 'Heracles'],       ['Cloto', None],                  ['Láquesis', None],
+    ['Atropos', None],            ['Minotauro de Creta', 'Teseo'],  ['Harpías', None],
+    ['Argos Panoptes', 'Hermes'], ['Aves del Estínfalo', None],     ['Talos', 'Medea'],
+    ['Sirenas', None],            ['Pitón', 'Apolo'],               ['Cierva de Cerinea', None],
+    ['Basilisco', None],          ['Jabalí de Erimanto', None],
+]
+
+for criatura, vencedor in lista:
+    datos = {'vencedor': vencedor}
+    insertar_nodo(arbol, criatura, datos)
+
+
+
+print('a. listado inorden de las criaturas y quienes la derrotaron\n')
+inorden(arbol)
+
+
+print('b. se debe permitir cargar una breve descripción sobre cada criatura\n')
+clave = input('ingrese como comienza la criatura a buscar: ').capitalize()
+descripciones(arbol)
+inorden_empieza_con(arbol, clave)
+buscado = input('ingrese nombre que desea modificar: ')
+pos = busqueda(arbol, buscado)
+print(busqueda(arbol, buscado))
+print()
+descri = input('Ingresar la descripcion: ')
+if pos:
+    pos['datos']['descripcion'] = descri
+print()
+print('La criatura quedo así:\n')
+pos = busqueda(arbol, buscado)
+if pos:
+    print(pos['info'], pos['datos'])
+
+    
+print('c. mostrar toda la información de la criatura Talos\n')
+print(busqueda(arbol, 'Talos'))
+        
+   
+print('d. determinar los 3 héroes o dioses que derrotaron mayor cantidad de criaturas\n')
+        
+ListaVencedor=list()
+        
+def Lista_vencedor(arbol):
+    if(arbol is not None):
+        Lista_vencedor(arbol['izq'])
+        if arbol['datos']['vencedor'] is not None:
+            dato=(arbol['datos']['vencedor'])
+            if dato in ListaVencedor:
+                ListaVencedor.append(dato)
+            else:
+                ListaVencedor.append(dato)
+        Lista_vencedor(arbol['der'])
+        
+Lista_vencedor(arbol)
+
+for n in range(3):
+    Mayor=(max(set(ListaVencedor), key= ListaVencedor.count))
+    print(Mayor,contar_Vencedor(arbol,Mayor))
+    for n in range(contar_Vencedor(arbol,Mayor)):
+        ListaVencedor.remove(Mayor)
+
+  
+print('e. listar las criaturas derrotadas por Heracles\n')
+inorden_Heracles(arbol)
+
+    
+print('f. listar las criaturas que no han sido derrotadas\n')
+inorden_No_vencidas(arbol)
+
+    
+print('g. además cada nodo debe tener un campo “capturada” que almacenará el nombre del héroe o dios que la capturo\n')
+capturadas(arbol)
+
+    
+print('h. modifique los nodos de las criaturas Cerbero, Toro de Creta, Cierva Cerinea y Jabalí de Erimanto indicando que Heracles las atrapó\n')
+pos = busqueda(arbol,'Cerbero')
+if pos:
+    pos['datos']['capturada'] = 'Heracles'
+print (pos['info'], pos['datos'])
+pos = busqueda(arbol,'Toro de Creta')
+if pos:
+    pos['datos']['capturada'] = 'Heracles'
+print(pos['info'], pos['datos'])
+pos = busqueda(arbol,'Cierva de Cerinea')
+if pos:
+    pos['datos']['capturada'] = 'Heracles'
+print(pos['info'], pos['datos'])
+pos = busqueda(arbol,'Jabalí de Erimanto')
+if pos:
+    pos['datos']['capturada'] = 'Heracles'
+print(pos['info'], pos['datos']) 
+
+print('i. se debe permitir búsquedas por coincidencia\n')
+clave = input('ingrese como comienza la criatura a buscar: ').capitalize()
+inorden_empieza_con(arbol, clave)
+print()
+
+     
+print('j. eliminar al Basilisco y a las Sirenas\n')
+print('Listado previo\n')
+inorden(arbol)
+eliminar_nodo(arbol, 'Basilisco')
+eliminar_nodo(arbol, 'Sirenas')
+print()
+print('Nuevo Listado\n')
+inorden(arbol)
+print()
+
+        
+print('k. modificar el nodo que contiene a las Aves del Estínfalo, agregando que Heracles derroto a varias\n')
+pos = busqueda(arbol,'Aves del Estínfalo')
+if pos:
+    pos['datos']['vencedor'] = 'Heracles'
+print(pos)
+
+    
+print('l. modifique el nombre de la criatura Ladón por Dragón Ladón\n')
+clave = input('ingrese parte de lo que desea buscar: ').capitalize()
+inorden_empieza_con(arbol, clave)
+print()
+clave = input('ingrese nombre que desea modificar: ')
+print()
+datos_guardados=arbol['datos']
+pos = eliminar_nodo(arbol, clave)
+if pos:
+    name = input('ingrese nuevo nombre: ')
+    insertar_nodo(arbol, name, datos_guardados)
+else:
+    print('valor no encontrado en el arbol')
+print()
+inorden(arbol)
+print()
+
+    
+print('m. realizar un listado por nivel del árbol\n')
+por_nivel(arbol)
+
+   
+print('n. muestre las criaturas capturadas por Heracles\n')
+inorden_capturada(arbol)
+
+ 
