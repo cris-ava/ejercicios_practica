@@ -157,6 +157,87 @@ def contar_nodos(arbol):
         contador += contar_nodos(arbol['der'])
     return contador
 
+def inorden_empieza_con(arbol, valor):
+    if(arbol is not None):
+        inorden_empieza_con(arbol['izq'], valor)
+        if arbol['info'].startswith(valor):
+            print(arbol['info'])
+        inorden_empieza_con(arbol['der'], valor)
+
+
+
+def descripciones(arbol):
+    if(arbol is not None):
+        descripciones(arbol['izq'])
+        if not 'descripcion' in arbol['datos']:
+            arbol['datos']['descripcion']=None
+        descripciones(arbol['der'])
+
+
+
+def inorden_Heracles(arbol):
+    if(arbol is not None):
+        inorden_Heracles(arbol['izq'])
+        if arbol['datos']['vencedor'] == 'Heracles':
+            print(arbol['info'])
+        inorden_Heracles(arbol['der'])
+
+
+
+def inorden_No_vencidas(arbol):
+    if(arbol is not None):
+        inorden_No_vencidas(arbol['izq'])
+        if arbol['datos']['vencedor'] == None:
+            print(arbol['info'])
+        inorden_No_vencidas(arbol['der'])
+
+
+
+def capturadas(arbol):
+    if(arbol is not None):
+        capturadas(arbol['izq'])
+        if not 'capturada' in arbol['datos']:
+            arbol['datos']['capturada']=None
+        capturadas(arbol['der'])
+
+
+
+def inorden_capturada(arbol):
+    if(arbol is not None):
+        inorden_capturada(arbol['izq'])
+        if 'capturada' in arbol['datos'] and arbol['datos']['capturada'] == 'Heracles':
+            print(arbol['info'])
+        inorden_capturada(arbol['der'])
+
+
+
+def contar_heroes(arbol):
+    contador = 0
+    if(arbol is not None):
+        if not arbol['datos']['vencedor'] == None:
+            contador += 1
+        contador += contar_heroes(arbol['izq'])
+        contador += contar_heroes(arbol['der'])
+    return contador
+    
+def contar_Vencedor(arbol,clave):
+    contador = 0
+    if(arbol is not None):
+        if arbol['datos']['vencedor'] == clave:
+            contador += 1
+        contador += contar_Vencedor(arbol['izq'],clave)
+        contador += contar_Vencedor(arbol['der'],clave)
+    return contador
+
+def Lista_vencedores(arbol):
+    if(arbol is not None):
+        Lista_vencedores(arbol['izq'])
+        if arbol['datos']['vencedor'] is not None:
+            print(arbol['datos']['vencedor'])
+        Lista_vencedores(arbol['der'])
+
+
+
 
 def inorden(arbol):
     if(arbol is not None):
@@ -279,3 +360,5 @@ def crear_bosque(arbol, bosque1, bosque2):
         else:
             insertar_nodo(bosque1, arbol['info'])
         crear_bosque(arbol['der'], bosque1, bosque2)
+
+
